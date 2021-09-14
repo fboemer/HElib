@@ -33,7 +33,7 @@ if [ "${PACKAGE_BUILD}" == "ON" ]; then
 fi
 
 cmake -Dhelib_DIR="${CMAKE_INSTALL_PREFIX}/share/cmake/helib" ..
-make -j4 VERBOSE=1
+make -j VERBOSE=1
 cd "${ROOT_DIR}/${CONSUMER_FOLDER}/tests"
 bats -t .
 

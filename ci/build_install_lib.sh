@@ -26,6 +26,6 @@ mkdir build
 cd build
 # We assume PACKAGE_BUILD argument to be a valid cmake option
 cmake -DPACKAGE_BUILD="${PACKAGE_BUILD}" -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}" -DBUILD_SHARED=ON -DENABLE_TEST=ON -DTARGET_ARCHITECTURE=x86-64 ..
-make -j4 VERBOSE=1
+make -j VERBOSE=1
 make install
 cd "${ROOT_DIR}"
