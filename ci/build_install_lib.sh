@@ -13,20 +13,28 @@
 
 set -xe
 
-if [ "$#" -ne 3 ]; then
-  echo "Wrong parameter number. Usage ./${0} <PACKAGE_BUILD> <USE_INTEL_HEXL> <CMAKE_INSTALL_PREFIX>"
+if [ "$#" -ne 4 ]; then
+  echo "Wrong parameter number. Usage ./${0} <PACKAGE_BUILD> <USE_INTEL_HEXL> <CMAKE_INSTALL_PREFIX> <INTEL_HEXL_DIR>"
   exit 1
 fi
 
 PACKAGE_BUILD="${1}"
 CMAKE_INSTALL_PREFIX="${2}"
 USE_INTEL_HEXL="${3}"
+INTEL_HEXL_DIR="${4}"
 ROOT_DIR="$(pwd)"
 
 mkdir build
 cd build
 # We assume PACKAGE_BUILD argument to be a valid cmake option
-cmake -DPACKAGE_BUILD="${PACKAGE_BUILD}" -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}" -DUSE_INTEL_HEXL="${USE_INTEL_HEXL}" -DBUILD_SHARED=ON -DENABLE_TEST=ON -DTARGET_ARCHITECTURE=x86-64 ..
+cmake -DPACKAGE_BUILD="${PACKAGE_BUILD}" \
+      -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}" \
+      -DUSE_INTEL_HEXL="${USE_INTEL_HEXL}" \
+      -DHEXL_DIR="${INTEL_HEXL_DIR}" \
+      -DBUILD_SHARED=ON \
+      -DENABLE_TEST=ON \
+      -DTARGET_ARCHITECTURE=x86-64 \
+      ..
 make -j4 VERBOSE=1
 make install
 cd "${ROOT_DIR}"
