@@ -16,7 +16,7 @@ on:
 # Define env vars #
 ###################
 env:
-  INSTALL_PREFIX: ./
+  INSTALL_PREFIX: $GITHUB_WORKSPACE
 
 jobs:
   library_build:
