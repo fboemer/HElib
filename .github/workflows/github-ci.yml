@@ -38,7 +38,7 @@ jobs:
       - run: |
           set -x
           env
-          sudo apt-get -yq --no-install-suggests --no-install-recommends install libgmp-dev libntl-dev
+          sudo apt-get -yq --no-install-suggests --no-install-recommends install libgmp-dev libntl-dev bats
           git clone https://github.com/intel/hexl.git -b v1.2.1
           cd hexl
           cmake -B build -DCMAKE_INSTALL_PREFIX=./ -DHEXL_SHARED_LIB=OFF
