@@ -21,7 +21,7 @@ env:
 jobs:
   library_build:
     runs-on: ubuntu-20.04
-    name: 'package_build=${{ matrix.package_build }} hexl=${{ matrix.hexl }}'
+    name: 'package_build=${{ matrix.package_build }} hexl=${{ matrix.hexl }} compiler=${{ matrix.cxx_compiler}}'
     environment: intel_workflow
     defaults:
       run:
@@ -30,6 +30,12 @@ jobs:
       matrix:
         package_build: [ON, OFF]
         hexl: [ON, OFF]
+        c_compiler: [gcc, clang]
+        include:
+          - c_compiler: gcc
+            cxx_compiler: g++
+          - c_compiler: clang
+            cxx_compiler: clang++
         exclude: # Skip HEXL package build
           - package_build: ON
             hexl: ON
@@ -41,11 +47,17 @@ jobs:
           sudo apt-get -yq --no-install-suggests --no-install-recommends install libgmp-dev libntl-dev bats
           git clone https://github.com/intel/hexl.git -b v1.2.1
           cd hexl
-          cmake -B build -DCMAKE_INSTALL_PREFIX=./ -DHEXL_SHARED_LIB=OFF
+          cmake -B build \
+            -DCMAKE_INSTALL_PREFIX=./ \
+            -DHEXL_SHARED_LIB=OFF \
+            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cxx_compiler }}
           cmake --build build -j4 --target install
           cd ../
 
-          ./ci/build_install_lib.sh "${{ matrix.package_build }}" ${{ env.INSTALL_PREFIX }} ${{ matrix.hexl }} "./hexl/lib/cmake/hexl-1.2.1"
+          ./ci/build_install_lib.sh "${{ matrix.package_build }}" ${{ env.INSTALL_PREFIX }} \
+            ${{ matrix.c_compiler }} ${{ matrix.cxx_compiler }} \
+             ${{ matrix.hexl }} "./hexl/lib/cmake/hexl-1.2.1"
           ./ci/test_lib.sh
           ./ci/build_test_consumer.sh "examples" "${{ matrix.package_build }}" ${{ env.INSTALL_PREFIX }}
           ./ci/build_test_consumer.sh "utils" "${{ matrix.package_build }}" ${{ env.INSTALL_PREFIX }}
