@@ -13,8 +13,8 @@
 
 set -xe
 
-if [ "$#" -ne 4 ]; then
-  echo "Wrong parameter number. Usage ./${0} <PACKAGE_BUILD> <RUNNER_OS> <C_COMPILER> <CXX_COMPILER>"
+if [ "$#" -ne 5 ]; then
+  echo "Wrong parameter number. Usage ./${0} <PACKAGE_BUILD> <RUNNER_OS> <C_COMPILER> <CXX_COMPILER> <USE_INTEL_HEXL>"
   exit 1
 fi
 
@@ -22,17 +22,19 @@ PACKAGE_BUILD="${1}"
 RUNNER_OS="${2}"
 C_COMPILER="${3}"
 CXX_COMPILER="${4}"
+USE_INTEL_HEXL="${5}"
 
-# TODO: install only if needed
-git clone https://github.com/intel/hexl.git -b v1.2.1
-cd hexl
-cmake -B build \
-  -DCMAKE_INSTALL_PREFIX=./ \
-  -DHEXL_SHARED_LIB=OFF \
-  -DCMAKE_C_COMPILER="${C_COMPILER}" \
-  -DCMAKE_CXX_COMPILER="${CXX_COMPILER}"
-cmake --build build -j4 --target install
-cd ../
+if [ "${USE_INTEL_HEXL}" == "ON"]
+  git clone https://github.com/intel/hexl.git -b v1.2.1
+  cd hexl
+  cmake -B build \
+    -DCMAKE_INSTALL_PREFIX=./ \
+    -DHEXL_SHARED_LIB=OFF \
+    -DCMAKE_C_COMPILER="${C_COMPILER}" \
+    -DCMAKE_CXX_COMPILER="${CXX_COMPILER}"
+  cmake --build build -j4 --target install
+  cd ../
+fi
 
 cd $HOME
 
@@ -44,35 +46,4 @@ if [ "${RUNNER_OS}" == "macos-latest" ]; then
   brew install ntl
 fi
 
-
-
-# if [ "${PACKAGE_BUILD}" == "OFF" ]; then
-#   if [ "${RUNNER_OS}" == "Linux" ]; then
-#     sudo apt-get -yq --no-install-suggests --no-install-recommends install libgmp-dev libntl-dev bats
-#   fi
-# fi
-  # if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
-    # if [ "${TRAVIS_DIST}" == "bionic" ]; then
-    #   sudo apt-get -yq --no-install-suggests --no-install-recommends $(travis_apt_get_options) install m4 libgmp-dev
-    #   curl -O "https://libntl.org/ntl-11.4.3.tar.gz"
-    #   tar --no-same-owner -xf ntl-11.4.3.tar.gz
-    #   cd "$HOME/ntl-11.4.3/src"
-    #   ./configure SHARED=on NTL_GMP_LIP=on NTL_THREADS=on NTL_THREAD_BOOST=on
-    #   make -j4
-    #   sudo make install
-    # else
-#       sudo apt-get -yq --no-install-suggests --no-install-recommends install libgmp-dev libntl-dev
-#     # fi
-#   elif [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-#     # GMP will be installed as a dependency to NTL (if it is not already present)
-#     brew install ntl
-#   fi
-# else
-#   if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
-#     sudo apt-get -yq --no-install-suggests --no-install-recommends $(travis_apt_get_options) install patchelf m4
-#   elif [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-#     brew install m4
-#   fi
-# fi
-
-# cd "$HOME"
+cd "$HOME"

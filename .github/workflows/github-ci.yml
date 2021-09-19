@@ -46,7 +46,7 @@ jobs:
           set -x
           env
           ./ci/install_deps.sh "${{ matrix.package_build }}" "${{ matrix.os }}" \
-            "${{ matrix.c_compiler }}" "${{ matrix.cxx_compiler }}"
+            "${{ matrix.c_compiler }}" "${{ matrix.cxx_compiler }}" "${{ matrix.hexl }}"
           ./ci/build_install_lib.sh "${{ matrix.package_build }}" ${{ env.INSTALL_PREFIX }} \
             ${{ matrix.c_compiler }} ${{ matrix.cxx_compiler }} \
              ${{ matrix.hexl }} "./hexl/lib/cmake/hexl-1.2.1"
